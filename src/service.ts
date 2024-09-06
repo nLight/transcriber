@@ -3,29 +3,32 @@ import * as Minio from "minio";
 import axios from "axios";
 import { Configuration, OpenAIApi } from "openai";
 import { GhostAdminAPI } from "@tryghost/admin-api";
+import * as dotenv from "dotenv";
+
+dotenv.config();
 
 // Minio configuration
 const minioClient = new Minio.Client({
-  endPoint: "YOUR_MINIO_ENDPOINT",
-  port: 9000,
+  endPoint: process.env.MINIO_ENDPOINT,
+  port: parseInt(process.env.MINIO_PORT, 10),
   useSSL: true,
-  accessKey: "YOUR_MINIO_ACCESS_KEY",
-  secretKey: "YOUR_MINIO_SECRET_KEY",
+  accessKey: process.env.MINIO_ACCESS_KEY,
+  secretKey: process.env.MINIO_SECRET_KEY,
 });
 
 // AssemblyAI configuration
-const assemblyAIKey = "YOUR_ASSEMBLYAI_API_KEY";
+const assemblyAIKey = process.env.ASSEMBLYAI_API_KEY;
 
 // OpenAI configuration
 const openAIConfig = new Configuration({
-  apiKey: "YOUR_OPENAI_API_KEY",
+  apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(openAIConfig);
 
 // Ghost Admin API configuration
 const ghostAdminAPI = new GhostAdminAPI({
-  url: "YOUR_GHOST_ADMIN_API_URL",
-  key: "YOUR_GHOST_ADMIN_API_KEY",
+  url: process.env.GHOST_ADMIN_API_URL,
+  key: process.env.GHOST_ADMIN_API_KEY,
   version: "v3",
 });
 
