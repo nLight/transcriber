@@ -17,6 +17,12 @@
 4. **Ghost Admin API**:
    - Set up a Ghost blog and get your Admin API key.
 
+5. **Dotenv**:
+   - Install dotenv to load environment variables:
+     ```sh
+     npm install dotenv
+     ```
+
 ### Usage
 
 1. Clone the repository:
