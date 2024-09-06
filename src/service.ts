@@ -4,6 +4,7 @@ import axios from "axios";
 import { Configuration, OpenAIApi } from "openai";
 import { GhostAdminAPI } from "@tryghost/admin-api";
 import * as dotenv from "dotenv";
+import { Client } from "pg";
 
 dotenv.config();
 
@@ -31,6 +32,17 @@ const ghostAdminAPI = new GhostAdminAPI({
   key: process.env.GHOST_ADMIN_API_KEY,
   version: "v3",
 });
+
+// PostgreSQL client configuration
+const pgClient = new Client({
+  host: process.env.PG_HOST,
+  port: parseInt(process.env.PG_PORT || "5432", 10),
+  user: process.env.PG_USER,
+  password: process.env.PG_PASSWORD,
+  database: process.env.PG_DATABASE,
+});
+
+pgClient.connect();
 
 // Function to upload audio file to Minio
 async function uploadToMinio(
@@ -119,6 +131,36 @@ async function createBlogPost(title: string, html: string) {
   });
 }
 
+// Function to save transcription to PostgreSQL database
+async function saveTranscriptionToDB(transcript: any, summary: string, fileUrl: string) {
+  const query = `
+    INSERT INTO "public"."transcriptions" (
+      "createdAt",
+      "transcription",
+      "audioUrl",
+      "summary",
+      "utterances",
+      "transcriptId"
+    ) VALUES (
+      NOW(),
+      $1,
+      $2,
+      $3,
+      $4,
+      $5
+    )
+  `;
+  const values = [
+    transcript.text,
+    fileUrl,
+    summary,
+    JSON.stringify(transcript.utterances),
+    transcript.id,
+  ];
+
+  await pgClient.query(query, values);
+}
+
 // Main service function
 async function processAudio(filePath: string) {
   const bucketName = "audio-files";
@@ -161,6 +203,9 @@ async function processAudio(filePath: string) {
     <a href="${fileUrl}">Download Audio</a>
   `;
   await createBlogPost(postTitle, postHtml);
+
+  // Save transcription and summary to PostgreSQL database
+  await saveTranscriptionToDB(transcript, chapterSummary, fileUrl);
 }
 
 export { processAudio };
