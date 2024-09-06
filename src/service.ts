@@ -9,11 +9,11 @@ dotenv.config();
 
 // Minio configuration
 const minioClient = new Minio.Client({
-  endPoint: process.env.MINIO_ENDPOINT,
-  port: parseInt(process.env.MINIO_PORT, 10),
+  endPoint: process.env.MINIO_ENDPOINT || "localhost",
+  port: parseInt(process.env.MINIO_PORT || "9000", 10),
   useSSL: true,
-  accessKey: process.env.MINIO_ACCESS_KEY,
-  secretKey: process.env.MINIO_SECRET_KEY,
+  accessKey: process.env.MINIO_ACCESS_KEY || "minioadmin",
+  secretKey: process.env.MINIO_SECRET_KEY || "minioadmin",
 });
 
 // AssemblyAI configuration
@@ -98,7 +98,7 @@ async function summarizeText(text: string) {
     max_tokens: 150,
   });
 
-  return response.data.choices[0].text.trim();
+  return response.data.choices[0]?.text?.trim() || "";
 }
 
 // Function to convert utterances to YouTube-like chapters
