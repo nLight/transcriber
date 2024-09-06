@@ -1,0 +1,14 @@
+{
+  "name": "transcriber",
+  "version": "1.0.0",
+  "main": "dist/service.js",
+  "scripts": {
+    "start": "node dist/service.js"
+  },
+  "dependencies": {
+    "minio": "^7.0.18",
+    "axios": "^0.21.1",
+    "openai": "^3.0.0",
+    "@tryghost/admin-api": "^1.0.0"
+  }
+}
