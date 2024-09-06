@@ -6,9 +6,12 @@
     "start": "node dist/service.js"
   },
   "dependencies": {
-    "minio": "^7.0.18",
+    "@tryghost/admin-api": "^1.0.0",
     "axios": "^0.21.1",
-    "openai": "^3.0.0",
-    "@tryghost/admin-api": "^1.0.0"
+    "minio": "^7.0.18",
+    "openai": "^3.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.5.4"
   }
 }
